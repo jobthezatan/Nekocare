@@ -6,11 +6,11 @@ const BottomNav = () => {
     return (
         <View style={styles.container}>
             <NavIcon name="home" />
-            <NavIcon name="bar-chart-2" active />
+            <NavIcon name="activity" active />
             <View style={styles.addButton}>
                 <Text style={styles.plus}>+</Text>
             </View>
-            <NavIcon name="camera" />
+            <NavIcon name="video" />
             <NavIcon name="user" />
         </View>
     );
@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
     },
     activeIconBox: {
         backgroundColor: '#ECFDF5',
-        borderRadius: 12,
+        borderRadius: 20,
     },
     addButton: {
         width: 50,
