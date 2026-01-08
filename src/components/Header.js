@@ -4,7 +4,9 @@ import { View, Text, StyleSheet, Image } from 'react-native';
 const Header = () => {
     return (
         <View style={styles.container}>
-            <Text style={styles.logo}>NEK<Text style={styles.paw}>🐾</Text>CARE</Text>
+            <View style={styles.logoContainer}>
+                <Text style={styles.logo}>NEK<Text style={styles.paw}>🐾</Text>CARE</Text>
+            </View>
         </View>
     );
 };
@@ -16,15 +18,22 @@ const styles = StyleSheet.create({
         backgroundColor: '#E8F5F3',
         paddingBottom: 15,
     },
+    logoContainer: {
+        backgroundColor: '#2F80ED', // Blue box color
+        alignSelf: 'flex-start',
+        paddingHorizontal: 10,
+        paddingVertical: 5,
+        borderRadius: 5,
+    },
     logo: {
-        fontSize: 25,
+        fontSize: 20,
         fontWeight: '800',
-        color: '#6B7C7C',
+        color: 'white',
         letterSpacing: 1,
     },
     paw: {
-        fontSize: 16, // Adjust to fit nicely
-        color: '#34D399',
+        fontSize: 16,
+        color: '#AEE2FF', // Lighter blue for paw
     }
 });
 

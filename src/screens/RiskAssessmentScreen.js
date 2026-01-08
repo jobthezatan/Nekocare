@@ -17,7 +17,7 @@ const RiskAssessmentScreen = ({ navigateTo }) => {
     const activePrevention = preventionApproaches[0];
 
     // Gradient color for the gauge (simulated with standard colors for now)
-    const gaugeColor = riskLevel > 50 ? '#ffffffff' : '#10B981';
+    const gaugeColor = riskLevel > 50 ? '#F59E0B' : '#10B981';
 
     const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
     const selectOption = (option) => {
