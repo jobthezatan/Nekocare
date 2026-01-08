@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, SafeAreaView, Platform, StatusBar } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, SafeAreaView, Platform, StatusBar, TouchableOpacity } from 'react-native';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import Header from '../components/Header';
 import ChartSection from '../components/ChartSection';
@@ -8,7 +8,13 @@ import BottomNav from '../components/BottomNav';
 import { usePetStore } from '../store/PetStore';
 
 const DashboardScreen = ({ navigateTo }) => {
-    const { selectedPet, waterIntake, waterGoal, riskHistory } = usePetStore();
+    const { selectedPet, waterIntake, waterGoal, riskHistory, cats, setSelectedPet } = usePetStore();
+    const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
+
+    const handleSelectCat = (cat) => {
+        setSelectedPet(cat);
+        setIsDropdownOpen(false);
+    };
 
     return (
         <SafeAreaView style={styles.container}>
@@ -24,10 +30,38 @@ const DashboardScreen = ({ navigateTo }) => {
                         <Text style={styles.petTagText}>Pet Care</Text>
                     </View>
                 </View>
-                <View style={styles.inputBox}>
-                    <Text style={styles.inputText}>Edit core data</Text>
+
+                <TouchableOpacity
+                    style={styles.inputBox}
+                    onPress={() => setIsDropdownOpen(!isDropdownOpen)}
+                    activeOpacity={0.7}
+                >
+                    <Text style={styles.inputText}>
+                        {selectedPet?.name || "Select a Cat"}
+                    </Text>
                     <Text style={styles.chevron}>⌄</Text>
-                </View>
+                </TouchableOpacity>
+
+                {isDropdownOpen && (
+                    <View style={styles.dropdownList}>
+                        {cats.length > 0 ? (
+                            cats.map((cat) => (
+                                <TouchableOpacity
+                                    key={cat.id}
+                                    style={styles.dropdownItem}
+                                    onPress={() => handleSelectCat(cat)}
+                                >
+                                    <Text style={styles.dropdownText}>{cat.name}</Text>
+                                    <Text style={styles.dropdownSubText}>{cat.breed || 'Unknown Breed'}</Text>
+                                </TouchableOpacity>
+                            ))
+                        ) : (
+                            <View style={styles.dropdownItem}>
+                                <Text style={styles.dropdownText}>No cats found</Text>
+                            </View>
+                        )}
+                    </View>
+                )}
 
                 {/* Chart Section */}
                 <ChartSection />
@@ -155,6 +189,37 @@ const styles = StyleSheet.create({
     chevron: {
         color: '#6B7280',
         fontSize: 12,
+    },
+    dropdownList: {
+        backgroundColor: 'white',
+        borderRadius: 8,
+        padding: 5,
+        marginTop: -15, // Overlap slightly or just sit below
+        marginBottom: 20,
+        borderWidth: 1,
+        borderColor: '#E5E7EB',
+        elevation: 3,
+        shadowColor: '#000',
+        shadowOpacity: 0.1,
+        shadowOffset: { width: 0, height: 2 },
+    },
+    dropdownItem: {
+        paddingVertical: 10,
+        paddingHorizontal: 15,
+        borderBottomWidth: 1,
+        borderBottomColor: '#F3F4F6',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
+    dropdownText: {
+        fontSize: 14,
+        color: '#374151',
+        fontWeight: '500',
+    },
+    dropdownSubText: {
+        fontSize: 12,
+        color: '#9CA3AF',
     },
     // Water specific styles
     waterContainer: {
