@@ -1,20 +1,27 @@
+import React, { useState } from 'react';
+import { View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { PetProvider } from './src/store/PetStore';
+import DashboardScreen from './src/screens/DashboardScreen';
+import RiskAssessmentScreen from './src/screens/RiskAssessmentScreen';
 
 export default function App() {
+  const [currentScreen, setCurrentScreen] = useState('Dashboard');
+
+  const navigateTo = (screenName) => {
+    setCurrentScreen(screenName);
+  };
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <PetProvider>
+      <View style={{ flex: 1 }}>
+        <StatusBar style="auto" />
+        {currentScreen === 'Dashboard' ? (
+          <DashboardScreen navigateTo={navigateTo} />
+        ) : (
+          <RiskAssessmentScreen navigateTo={navigateTo} />
+        )}
+      </View>
+    </PetProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
