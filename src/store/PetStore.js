@@ -12,6 +12,7 @@ export const PetProvider = ({ children }) => {
     const [waterGoal, setWaterGoal] = useState(400); // ml
 
     // Mock Data State
+    const [cats, setCats] = useState([]);
     const [healthLogs, setHealthLogs] = useState([]);
     const [riskHistory, setRiskHistory] = useState([]);
     const [latestRiskAssessment, setLatestRiskAssessment] = useState({
@@ -35,6 +36,21 @@ export const PetProvider = ({ children }) => {
     const fetchDashboardData = async () => {
         try {
             await checkAndSeedData(); // Ensure data exists
+
+            // 0. Fetch Cats
+            const { data: catsData, error: catsError } = await supabase
+                .from('cats')
+                .select('*');
+
+            if (catsError) throw catsError;
+            if (catsData) {
+                setCats(catsData);
+                // If there are cats and no selected pet (or dummy one), select the first one
+                // Or just keep the logic of 'selectedPet'
+                if (catsData.length > 0 && selectedPet.name === 'Mochi' && !selectedPet.id) {
+                    setSelectedPet(catsData[0]);
+                }
+            }
 
             // 1. Fetch daily_health_logs (Last 7 days)
             const { data: logs, error: logsError } = await supabase
@@ -183,9 +199,40 @@ export const PetProvider = ({ children }) => {
         }
     };
 
-    // Load data on mount (Simulated)
+    // Load data on mount and subscribe to changes
     React.useEffect(() => {
         fetchDashboardData();
+
+        const channel = supabase.channel('db-changes')
+            .on(
+                'postgres_changes',
+                { event: '*', schema: 'public', table: 'cats' },
+                (payload) => {
+                    console.log('Real-time update from cats:', payload);
+                    fetchDashboardData();
+                }
+            )
+            .on(
+                'postgres_changes',
+                { event: '*', schema: 'public', table: 'daily_health_logs' },
+                (payload) => {
+                    console.log('Real-time update from daily_health_logs:', payload);
+                    fetchDashboardData();
+                }
+            )
+            .on(
+                'postgres_changes',
+                { event: '*', schema: 'public', table: 'risk_assessments' },
+                (payload) => {
+                    console.log('Real-time update from risk_assessments:', payload);
+                    fetchDashboardData();
+                }
+            )
+            .subscribe();
+
+        return () => {
+            supabase.removeChannel(channel);
+        };
     }, []);
 
     const updateTimeRange = (range) => {
@@ -196,6 +243,8 @@ export const PetProvider = ({ children }) => {
 
     const value = {
         selectedPet,
+        setSelectedPet,
+        cats,
         timeRange,
         updateTimeRange,
         waterIntake,

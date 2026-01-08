@@ -56,18 +56,17 @@ const RiskAssessmentScreen = ({ navigateTo }) => {
 
                     {/* Circular Chart Simulation */}
                     <View style={styles.chartWrapper}>
-                        <View style={styles.outerCircle}>
-                            <View style={[styles.innerCircle, { borderTopColor: gaugeColor, borderRightColor: gaugeColor }]} />
-                            <View style={styles.centerCircle}>
-                                <Text style={styles.percentageText}>{riskLevel}%</Text>
-                            </View>
+                        {/* Background Circle */}
+                        <View style={styles.outerCircle} />
+
+                        {/* Progress Arc (Static 50% for now to match previous logic, but aligned) */}
+                        <View style={[styles.innerCircle, { borderTopColor: gaugeColor, borderRightColor: gaugeColor }]} />
+
+                        {/* Center Text */}
+                        <View style={styles.centerCircle}>
+                            <Text style={styles.percentageText}>{riskLevel}%</Text>
                         </View>
                     </View>
-
-                    <Text style={styles.disclaimer}>
-                        *ผลลัพธ์จากการทำนายสุขภาพแมว โปรดทราบว่านี่เป็นเพียงการประเมินเบื้องต้นเท่านั้น (ความแม่นยำ 88%)
-                        โปรดปรึกษาสัตวแพทย์เพื่อวินิจฉัยโรค
-                    </Text>
                 </View>
 
                 {/* Risk Level Section */}
@@ -213,11 +212,12 @@ const styles = StyleSheet.create({
         color: '#4B5563',
     },
     chartWrapper: {
-        width: 150,
-        height: 150,
+        width: 140,
+        height: 140,
         justifyContent: 'center',
         alignItems: 'center',
         marginVertical: 10,
+        position: 'relative',
     },
     outerCircle: {
         width: 140,
@@ -225,21 +225,21 @@ const styles = StyleSheet.create({
         borderRadius: 70,
         borderWidth: 10,
         borderColor: '#FEF3C7', // Light orange bg
-        justifyContent: 'center',
-        alignItems: 'center',
-        position: 'relative',
+        position: 'absolute',
     },
     innerCircle: {
-        position: 'absolute',
         width: 140,
         height: 140,
         borderRadius: 70,
         borderWidth: 10,
         borderColor: 'transparent',
-        transform: [{ rotate: '-45deg' }], // Simple rotation to simulate part fill
+        position: 'absolute',
+        transform: [{ rotate: '-45deg' }],
     },
     centerCircle: {
-        position: 'absolute',
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 1,
     },
     percentageText: {
         fontSize: 32,
